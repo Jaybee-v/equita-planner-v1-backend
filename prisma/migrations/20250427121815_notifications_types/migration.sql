@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `notification` ADD COLUMN `type` ENUM('NEW_RIDER') NOT NULL DEFAULT 'NEW_RIDER';

@@ -13,11 +13,322 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model PreRegistration {
+
+  id String  @id @default(cuid())
+  email String @unique
+  createdAt DateTime @default(now())
+}
+
 model User {
   id        String   @id @default(cuid())
   email String @unique
   password String
+  role UserRole @default(STABLE)
+  isVerified Boolean @default(false)
   lastSeen DateTime?
+  isIndependentInstructor Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  invitedBy String?
+  mustChangePassword Boolean @default(false)
+
+  rider Rider?
+  stable Stable?
+  instructor Instructor?
+
+
+  notifications Notification[] @relation("notificationUser")
+  userSetting UserSetting?
+}
+
+model UserSetting {
+  id        String   @id @default(cuid())
+  userId String @unique
+  allStableNotifications Boolean @default(true)
+  emailNotifications Boolean @default(true)
+  pushNotifications Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum UserRole {
+  STABLE
+  RIDER
+  INSTRUCTOR
+  ADMIN
+  GUEST
+}
+
+model Rider {
+  id        String   @id @default(cuid())
+  userId String @unique
+  name String
+  familyName String
+  level RiderLevel @default(BEGINNER)
+  gender Gender @default(N)
+  imageUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  affiliationRequests AffiliationRequest[]
+  activityParticipants ActivityParticipant[]
+  slotRequests SlotRequest[]
+  conversations Conversation[]
+}
+
+model Instructor {
+  id        String   @id @default(cuid())
+  userId String @unique
+  isIndependent Boolean @default(false)
+  name String
+  familyName String
+  gender Gender @default(N)
+  phone String
+  picture String?
+  stableId String?
+  color String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stable Stable? @relation(fields: [stableId], references: [id])
+  activities Activity[]
+}
+
+enum Gender {
+  M
+  F
+  N
+}
+
+enum RiderLevel {
+  BEGINNER
+  GALOP_1
+  GALOP_2
+  GALOP_3
+  GALOP_4
+  GALOP_5
+  GALOP_6
+  GALOP_7
+  ALL
+}
+
+model Stable {
+  id        String   @id @default(cuid())
+  userId String @unique
+  logoUrl String?
+  name String
+  picture1 String?
+  picture2 String?
+  picture3 String?
+  numStreet Int
+  street String
+  zip String
+  city String
+  region String?
+  department String?
+  country String
+  phone String
+  website String?
+  latitude Float?
+  longitude Float?
+  slug String @unique @default(uuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  affiliationRequests AffiliationRequest[]
+  activities Activity[]
+  slotRequests SlotRequest[]
+  conversations Conversation[]
+  instructors Instructor[]
+}
+
+model AffiliationRequest {
+  id        String   @id @default(cuid())
+  riderId String
+  stableId String
+  status Status @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rider Rider @relation(fields: [riderId], references: [id], onDelete: Cascade)
+  stable Stable @relation(fields: [stableId], references: [id], onDelete: Cascade)
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  stableId String
+  title String
+  description String?
+  date DateTime
+  startDate DateTime
+  endDate DateTime
+  type ActivityType @default(PUBLIC)
+  visibility ActivityVisibility @default(PUBLIC)
+  requiredLevel RiderLevel?
+  maxParticipants Int?
+  createdBy CreatedByOption @default(STABLE)
+  createdFromRequestId String?
+  validationParticipantOption ValidationOption @default(AUTOMATIC)
+  instructorId String?
+  openToMoreLevel Boolean @default(true)
+  openToPublic Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+
+
+  stable Stable @relation(fields: [stableId], references: [id], onDelete: Cascade)
+  instructor Instructor? @relation(fields: [instructorId], references: [id])
+
+
+  participants ActivityParticipant[]
+  @@index([stableId, date])
+}
+
+model ActivityParticipant {
+  id        String   @id @default(cuid())
+  activityId String
+  riderId String
+  status Status @default(PENDING)
+  createdAt DateTime @default(now())
+
+  rider Rider @relation(fields: [riderId], references: [id])
+  activity Activity @relation(fields: [activityId], references: [id])
+}
+
+enum ValidationOption {
+  AUTOMATIC
+  MANUAL
+}
+
+model SlotRequest {
+  id        String   @id @default(cuid())
+  stableId String
+  riderId String
+  message String?
+  preferredStartDate DateTime
+  preferredEndDate DateTime
+  status Status @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rider Rider @relation(fields: [riderId], references: [id])
+  stable Stable @relation(fields: [stableId], references: [id])
+}
+
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId String
+  title String
+  message String
+  status NotificationStatus @default(UNREAD) 
+
+  sendBy NotificationSender @default(SYSTEM)
+  senderId String?
+  type NotificationType @default(AFFILIATION_REQUEST)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  watchedAt DateTime?
+
+  user User? @relation("notificationUser", fields: [userId], references: [id])
+}
+
+enum NotificationSender {
+  SYSTEM
+  RIDER
+  STABLE
+  INSTRUCTOR
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  stableId String
+  riderId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rider Rider @relation(fields: [riderId], references: [id])
+  stable Stable @relation(fields: [stableId], references: [id])
+  messages Message[]
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  conversationId String
+  content String
+  senderId String
+  status MessageStatus @default(SENT)
+  notReadCount Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model TempGoogleAuthRole {
+  id Int @id @default(autoincrement())
+  role UserRole
+  isApplied Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
+enum NotificationType {
+  AFFILIATION_REQUEST
+  AFFILIATION_REQUEST_APPROVED
+  AFFILIATION_REQUEST_REJECTED
+  SYSTEM
+  FROM_STABLE
+  SUCCESS
+  INFO
+  VALIDATION
+  ALERT_STABLE
+  CONFIRMATION
+  WAITING
+}
+
+enum NotificationStatus {
+  READ
+  UNREAD
+}
+
+enum CreatedByOption {
+  STABLE
+  SYSTEM
+}
+
+enum ActivityType {
+  PUBLIC
+  PRIVATE
+  EVENT
+  STABLE_EVENT
+}
+
+enum ActivityVisibility {
+  MEMBERS
+  PUBLIC
+  PRIVATE
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
 }

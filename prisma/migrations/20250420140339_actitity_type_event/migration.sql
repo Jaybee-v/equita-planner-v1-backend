@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `activity` MODIFY `type` ENUM('PUBLIC', 'PRIVATE', 'EVENT') NOT NULL DEFAULT 'PUBLIC';

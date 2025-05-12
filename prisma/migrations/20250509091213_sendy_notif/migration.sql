@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `notification` MODIFY `sendBy` ENUM('SYSTEM', 'RIDER', 'STABLE', 'INSTRUCTOR') NOT NULL DEFAULT 'SYSTEM';

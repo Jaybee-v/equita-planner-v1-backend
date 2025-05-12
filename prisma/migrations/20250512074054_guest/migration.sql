@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `tempgoogleauthrole` MODIFY `role` ENUM('STABLE', 'RIDER', 'INSTRUCTOR', 'ADMIN', 'GUEST') NOT NULL;
+
+-- AlterTable
+ALTER TABLE `user` MODIFY `role` ENUM('STABLE', 'RIDER', 'INSTRUCTOR', 'ADMIN', 'GUEST') NOT NULL DEFAULT 'STABLE';
