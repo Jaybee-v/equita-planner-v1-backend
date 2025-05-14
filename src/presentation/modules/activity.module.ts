@@ -7,6 +7,7 @@ import { FindActivitiesByStableIdAndDayHandler } from 'src/application/usecases/
 import { FindByStableIdAndFiltersHandler } from 'src/application/usecases/activity/queries/find-by-stable-id-and-filters/find-by-stable-id-and-filters.handler';
 import { FindByStableIdAndWeekHandler } from 'src/application/usecases/activity/queries/find-by-stable-id-and-week/find-by-stable-id-and-week.handler';
 import { FindEmptySlotByStableIdBetweenDatesHandler } from 'src/application/usecases/activity/queries/find-empty-slot-by-stable-id-between-dates/find-empty-slot-by-stable-id-between-dates.handler';
+import { FindThreeDaysActivitiesByStableIdHandler } from 'src/application/usecases/activity/queries/find-three-days-by-stable-id/find-three-days-by-stable-id.handler';
 import { PrismaService } from 'src/infrastructure/config/prisma.service';
 import { ActivityRepository } from 'src/infrastructure/persistence/activity.repository';
 import { ActivityController } from '../controllers/activity.controller';
@@ -37,6 +38,7 @@ import { StableModule } from './stable.module';
     FindActivitiesByInstructorIdBetweenDatesHandler,
     FindByStableIdAndFiltersHandler,
     FindEmptySlotByStableIdBetweenDatesHandler,
+    FindThreeDaysActivitiesByStableIdHandler,
     PrismaService,
   ],
   exports: [

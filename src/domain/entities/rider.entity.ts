@@ -1,6 +1,8 @@
 import { Gender } from '../enums/gender.enum';
 import { RiderLevel } from '../enums/rider-level.enum';
+import { ActivityParticipantEntity } from './activity-participant.entity';
 import { AffiliationRequestEntity } from './affiliation-request.entity';
+import { SlotRequestEntity } from './slot-request.entity';
 import { UserEntity } from './user.entity';
 
 export class RiderEntity {
@@ -16,6 +18,8 @@ export class RiderEntity {
 
   private _affiliationRequests?: AffiliationRequestEntity[];
   private _user?: UserEntity;
+  private _slotRequests?: SlotRequestEntity[];
+  private _activityParticipants?: ActivityParticipantEntity[];
 
   constructor(
     id: string = '',
@@ -29,6 +33,8 @@ export class RiderEntity {
     imageUrl: string,
     affiliationRequests?: AffiliationRequestEntity[],
     user?: UserEntity,
+    slotRequests?: SlotRequestEntity[],
+    activityParticipants?: ActivityParticipantEntity[],
   ) {
     this._id = id;
     this._userId = userId;
@@ -41,6 +47,8 @@ export class RiderEntity {
     this._imageUrl = imageUrl;
     this._affiliationRequests = affiliationRequests;
     this._user = user;
+    this._slotRequests = slotRequests;
+    this._activityParticipants = activityParticipants;
   }
 
   get id(): string {
@@ -87,6 +95,14 @@ export class RiderEntity {
     return this._user;
   }
 
+  get slotRequests(): SlotRequestEntity[] | undefined {
+    return this._slotRequests;
+  }
+
+  get activityParticipants(): ActivityParticipantEntity[] | undefined {
+    return this._activityParticipants;
+  }
+
   public toJSON(): Record<string, any> {
     return {
       id: this._id,
@@ -102,6 +118,12 @@ export class RiderEntity {
         affiliation.toJson(),
       ),
       user: this._user?.toJSON(),
+      slotRequests: this._slotRequests?.map((slotRequest) =>
+        slotRequest.toJSON(),
+      ),
+      activityParticipants: this._activityParticipants?.map(
+        (activityParticipant) => activityParticipant.toJson(),
+      ),
     };
   }
 
@@ -125,6 +147,8 @@ export class RiderEntity {
       imageUrl ?? '',
       [],
       undefined,
+      [],
+      [],
     );
   }
 }
