@@ -41,4 +41,18 @@ export class EmailService implements IEmailService {
       context: { name, url: process.env.FRONTEND_URL, stableName },
     });
   }
+
+  async resetPasswordEmail(data: { email: string; url: string }) {
+    const { email, url } = data;
+    const subject = `Réinitialisation de votre mot de passe Equita-Planner`;
+    console.log('Sending reset password email with context:', {
+      data,
+    });
+    await this.mailerService.sendMail({
+      to: email,
+      subject,
+      template: 'reset-password',
+      context: { url },
+    });
+  }
 }

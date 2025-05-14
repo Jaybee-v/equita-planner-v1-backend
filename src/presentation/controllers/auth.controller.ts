@@ -1,9 +1,11 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   HttpCode,
+  Patch,
   Post,
   Put,
   Req,
@@ -11,6 +13,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { RequestResetPasswordHandler } from 'src/application/usecases/auth/command/request-reset-password/request-reset-password.handler';
+import { ResetPasswordHandler } from 'src/application/usecases/auth/command/reset-password/reset-password.handler';
 import { UpdatePasswordHandler } from 'src/application/usecases/auth/command/update-password/update-password.handler';
 import { FindMeHandler } from 'src/application/usecases/auth/queries/find-me/find-me.handler';
 import { LoginHandler } from 'src/application/usecases/auth/queries/login/login.handler';
@@ -28,6 +32,8 @@ export class AuthController {
     private readonly refreshTokenUseCase: RefreshTokenHandler,
     private readonly updatePasswordUseCase: UpdatePasswordHandler,
     private readonly deleteUserUseCase: DeleteUserHandler,
+    private readonly requestResetPasswordUseCase: RequestResetPasswordHandler,
+    private readonly resetPasswordUseCase: ResetPasswordHandler,
   ) {}
 
   @Public()
@@ -48,6 +54,38 @@ export class AuthController {
   @Post('refresh-token')
   async refreshToken(@Req() req: Request & { user: JwtUserPayload }) {
     return await this.refreshTokenUseCase.execute({ userId: req.user.sub });
+  }
+
+  @Public()
+  @HttpCode(200)
+  @Post('request-reset-password')
+  async requestResetPassword(@Body() body: { email: string }) {
+    console.log('requestResetPassword', body);
+    return await this.requestResetPasswordUseCase.execute({
+      email: body.email,
+    });
+  }
+
+  @HttpCode(200)
+  @Patch('reset-password')
+  async resetPassword(
+    @Body() body: { password: string },
+    @Req() req: Request & { user: JwtUserPayload },
+  ) {
+    if (body.password.length < 8) {
+      throw new BadRequestException(
+        'Le mot de passe doit contenir au moins 8 caractères',
+      );
+    }
+
+    await this.resetPasswordUseCase.execute({
+      password: body.password,
+      requestedBy: req.user.sub,
+    });
+
+    return {
+      success: true,
+    };
   }
 
   @HttpCode(200)

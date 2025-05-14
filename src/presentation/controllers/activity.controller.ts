@@ -18,6 +18,7 @@ import { FindActivitiesByStableIdAndDayHandler } from 'src/application/usecases/
 import { FindByStableIdAndFiltersHandler } from 'src/application/usecases/activity/queries/find-by-stable-id-and-filters/find-by-stable-id-and-filters.handler';
 import { FindByStableIdAndWeekHandler } from 'src/application/usecases/activity/queries/find-by-stable-id-and-week/find-by-stable-id-and-week.handler';
 import { FindEmptySlotByStableIdBetweenDatesHandler } from 'src/application/usecases/activity/queries/find-empty-slot-by-stable-id-between-dates/find-empty-slot-by-stable-id-between-dates.handler';
+import { FindThreeDaysActivitiesByStableIdHandler } from 'src/application/usecases/activity/queries/find-three-days-by-stable-id/find-three-days-by-stable-id.handler';
 import { CreatedByOption } from 'src/domain/enums/created-by-option.enum';
 import { SelectRiderLevelRequestForNotification } from 'src/domain/enums/select-rider-level-request-for-notification';
 import { UserRole } from 'src/domain/enums/user-role.enum';
@@ -38,6 +39,7 @@ export class ActivityController {
     private readonly findActivitiesByStableIdAndFiltersUseCase: FindByStableIdAndFiltersHandler,
     private readonly findActivitiesByInstructorIdBetweenDatesUseCase: FindActivitiesByInstructorIdBetweenDatesHandler,
     private readonly findEmptySlotsByStableIdBetweenDatesUseCase: FindEmptySlotByStableIdBetweenDatesHandler,
+    private readonly findThreeDaysActivitiesByStableIdUseCase: FindThreeDaysActivitiesByStableIdHandler,
   ) {}
 
   @HttpCode(201)
@@ -108,6 +110,20 @@ export class ActivityController {
       date: new Date(date),
       requestedBy: req.user.sub,
       role: req.user.role,
+    });
+  }
+
+  @HttpCode(200)
+  @Get('stable/:stableId/three-days/:date')
+  async findActivitiesByStableIdForMobile(
+    @Param('stableId') stableId: string,
+    @Param('date') date: string,
+    @Req() req: Request & { user: JwtUserPayload },
+  ) {
+    return this.findThreeDaysActivitiesByStableIdUseCase.execute({
+      stableId,
+      date: new Date(date),
+      requestedBy: req.user.sub,
     });
   }
 

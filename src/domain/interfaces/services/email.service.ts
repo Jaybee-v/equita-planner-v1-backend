@@ -9,4 +9,5 @@ export interface IEmailService {
     name: string;
     email: string;
   }): Promise<void>;
+  resetPasswordEmail(data: { email: string; url: string }): Promise<void>;
 }
