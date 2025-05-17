@@ -5,6 +5,7 @@ import { RiderLevel } from '../enums/rider-level.enum';
 import { ValidationOption } from '../enums/validation-option.enum';
 import { ActivityParticipantEntity } from './activity-participant.entity';
 import { InstructorEntity } from './instructor.entity';
+import { PriceEntity } from './price.entity';
 import { StableEntity } from './stable.entity';
 
 export class ActivityEntity {
@@ -25,8 +26,11 @@ export class ActivityEntity {
   private _instructorId: string | null;
   private _openToMoreLevel: boolean;
   private _openToPublic: boolean;
+  private _priceId: string;
+
   private _createdAt: Date;
   private _updatedAt: Date;
+  private _price?: PriceEntity;
   private _participants?: ActivityParticipantEntity[];
   private _instructor?: InstructorEntity;
   private _stable?: StableEntity;
@@ -48,11 +52,13 @@ export class ActivityEntity {
     instructorId: string | null = null,
     openToMoreLevel: boolean,
     openToPublic: boolean = false,
+    priceId: string,
     createdAt: Date,
     updatedAt: Date,
     participants?: ActivityParticipantEntity[],
     instructor?: InstructorEntity,
     stable?: StableEntity,
+    price?: PriceEntity,
   ) {
     this._id = id;
     this._stableId = stableId;
@@ -76,6 +82,8 @@ export class ActivityEntity {
     this._updatedAt = updatedAt;
     this._instructor = instructor;
     this._stable = stable;
+    this._priceId = priceId;
+    this._price = price;
   }
 
   get id(): string {
@@ -150,6 +158,10 @@ export class ActivityEntity {
     return this._openToPublic;
   }
 
+  get priceId(): string {
+    return this._priceId;
+  }
+
   get createdAt(): Date {
     return this._createdAt;
   }
@@ -164,6 +176,10 @@ export class ActivityEntity {
 
   get stable(): StableEntity | undefined {
     return this._stable;
+  }
+
+  get price(): PriceEntity | undefined {
+    return this._price;
   }
 
   public toJson(): Record<string, any> {
@@ -188,10 +204,12 @@ export class ActivityEntity {
       ),
       openToMoreLevel: this._openToMoreLevel,
       openToPublic: this._openToPublic,
+      priceId: this._priceId,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
       instructor: this._instructor?.toJSON(),
       stable: this._stable?.toJSON(),
+      price: this._price?.toJson(),
     };
   }
 
@@ -210,6 +228,7 @@ export class ActivityEntity {
     createdFromRequestId: string;
     validationParticipantOption: ValidationOption;
     openToMoreLevel: boolean;
+    priceId: string;
     instructorId: string | null;
   }): ActivityEntity {
     return new ActivityEntity(
@@ -230,6 +249,7 @@ export class ActivityEntity {
       data.instructorId,
       data.openToMoreLevel,
       false,
+      data.priceId,
       new Date(),
       new Date(),
     );

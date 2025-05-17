@@ -19,6 +19,7 @@ import { IActivityParticipantRepository } from 'src/domain/interfaces/activity-p
 import { IActivityRepository } from 'src/domain/interfaces/activity.repository';
 import { INotificationRepository } from 'src/domain/interfaces/notification.repository';
 import { ISlotRequestRepository } from 'src/domain/interfaces/slot-request.repository';
+import { IStableRepository } from 'src/domain/interfaces/stable.repository';
 import { UpdateStatusCommand } from './update-status.command';
 
 @Injectable()
@@ -32,6 +33,8 @@ export class UpdateSlotRequestStatusHandler {
     private readonly notificationRepository: INotificationRepository,
     @Inject('IActivityParticipantRepository')
     private readonly activityParticipantRepository: IActivityParticipantRepository,
+    @Inject('IStableRepository')
+    private readonly stableRepository: IStableRepository,
   ) {}
 
   async execute(command: UpdateStatusCommand): Promise<void> {
@@ -50,6 +53,12 @@ export class UpdateSlotRequestStatusHandler {
       !slotRequest.stable
     ) {
       throw new BadRequestException("La demande n'est pas en attente");
+    }
+
+    const stable = await this.stableRepository.findById(slotRequest.stableId);
+
+    if (!stable) {
+      throw new NotFoundException('Aucune écurie trouvée');
     }
 
     if (slotRequest.stable.userId !== requestedBy) {
@@ -77,6 +86,7 @@ export class UpdateSlotRequestStatusHandler {
         requiredLevel: slotRequest.rider.level,
         openToMoreLevel: false,
         instructorId: null,
+        priceId: stable.prices[0].id,
       });
 
       const _newActivity = await this.activityRepository.create(newActivity);

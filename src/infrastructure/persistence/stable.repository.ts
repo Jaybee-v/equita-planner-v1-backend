@@ -48,6 +48,9 @@ export class StableRepository implements IStableRepository {
   async findBySlug(slug: string): Promise<StableEntity | null> {
     const raw = await this.prisma.stable.findUnique({
       where: { slug },
+      include: {
+        prices: true,
+      },
     });
     return raw ? StableMapper.toDomain(raw) : null;
   }
@@ -55,6 +58,9 @@ export class StableRepository implements IStableRepository {
   async findByUserId(userId: string): Promise<StableEntity | null> {
     const raw = await this.prisma.stable.findFirst({
       where: { userId },
+      include: {
+        prices: true,
+      },
     });
     return raw ? StableMapper.toDomain(raw) : null;
   }
@@ -80,6 +86,7 @@ export class StableRepository implements IStableRepository {
           },
         },
         instructors: true,
+        prices: true,
       },
     });
     return raw ? StableMapper.toDomain(raw) : null;
@@ -88,6 +95,9 @@ export class StableRepository implements IStableRepository {
   async findById(id: string): Promise<StableEntity | null> {
     const raw = await this.prisma.stable.findUnique({
       where: { id },
+      include: {
+        prices: true,
+      },
     });
     return raw ? StableMapper.toDomain(raw) : null;
   }

@@ -2,6 +2,7 @@ import {
   Activity as PrismaActivity,
   ActivityParticipant as PrismaActivityParticipant,
   Instructor as PrismaInstructor,
+  Price as PrismaPrice,
   Stable as PrismaStable,
 } from '@prisma/client';
 import { ActivityEntity } from 'src/domain/entities/activity.entity';
@@ -12,6 +13,7 @@ import { RiderLevel } from 'src/domain/enums/rider-level.enum';
 import { ValidationOption } from 'src/domain/enums/validation-option.enum';
 import { ActivityParticipantMapper } from './activity-participant.mapper';
 import { InstructorMapper } from './instructor.mapper';
+import { PriceMapper } from './price.mapper';
 import { StableMapper } from './stable.mapper';
 export class ActivityMapper {
   static toDomain(
@@ -19,6 +21,7 @@ export class ActivityMapper {
       participants?: PrismaActivityParticipant[];
       instructor?: PrismaInstructor;
       stable?: PrismaStable;
+      price?: PrismaPrice;
     },
   ): ActivityEntity {
     return new ActivityEntity(
@@ -39,6 +42,7 @@ export class ActivityMapper {
       raw.instructorId ?? '',
       raw.openToMoreLevel,
       raw.openToPublic,
+      raw.priceId ?? '',
       raw.createdAt,
       raw.updatedAt,
       raw.participants?.map((participant) =>
@@ -46,6 +50,7 @@ export class ActivityMapper {
       ),
       raw.instructor ? InstructorMapper.toDomain(raw.instructor) : undefined,
       raw.stable ? StableMapper.toDomain(raw.stable) : undefined,
+      raw.price ? PriceMapper.toDomain(raw.price) : undefined,
     );
   }
 }

@@ -71,6 +71,7 @@ export class AuthService implements IAuthService {
         password: '',
         role: userDto.role,
         isIndependentInstructor: false,
+        isVerified: true,
       });
 
       const createdUser = await this.userRepository.create(newUser);

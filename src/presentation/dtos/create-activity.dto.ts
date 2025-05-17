@@ -62,4 +62,8 @@ export class CreateActivityDto {
 
   @IsOptional()
   instructorId: string = '';
+
+  @IsString()
+  @IsNotEmpty()
+  priceId: string = '';
 }

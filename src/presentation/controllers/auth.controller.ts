@@ -133,6 +133,7 @@ export class AuthController {
       email: req.user._email,
       password: '',
     });
+
     res.redirect(
       `${process.env.FRONTEND_URL}/auth/signin?token=${response.token}&refreshToken=${response.refreshToken}`,
     );

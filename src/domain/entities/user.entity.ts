@@ -175,13 +175,14 @@ export class UserEntity {
     isIndependentInstructor: boolean;
     invitedBy?: string;
     mustChangePassword?: boolean;
+    isVerified?: boolean;
   }): UserEntity {
     return new UserEntity(
       '',
       data.email,
       data.password,
       data.role,
-      false,
+      data.isVerified ?? false,
       null,
       data.isIndependentInstructor,
       new Date(),

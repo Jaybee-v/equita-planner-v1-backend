@@ -49,6 +49,7 @@ export class CreateActivityHandler {
       validationParticipantOption: command.validationParticipantOption,
       openToMoreLevel: command.openToMoreLevel,
       instructorId: command.instructorId,
+      priceId: command.priceId,
     });
 
     const createdActivity = await this.activityRepository.create(newActivity);

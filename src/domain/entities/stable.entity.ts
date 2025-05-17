@@ -1,5 +1,6 @@
 import { AffiliationRequestEntity } from './affiliation-request.entity';
 import { InstructorEntity } from './instructor.entity';
+import { PriceEntity } from './price.entity';
 import { SlotRequestEntity } from './slot-request.entity';
 
 export class StableEntity {
@@ -29,6 +30,7 @@ export class StableEntity {
   private _affiliationRequests: AffiliationRequestEntity[];
   private _instructors: InstructorEntity[];
   private _slotRequests: SlotRequestEntity[];
+  private _prices: PriceEntity[];
 
   constructor(
     id: string,
@@ -55,6 +57,7 @@ export class StableEntity {
     affiliationRequests: AffiliationRequestEntity[] = [],
     instructors: InstructorEntity[] = [],
     slotRequests: SlotRequestEntity[] = [],
+    prices: PriceEntity[] = [],
   ) {
     this._id = id;
     this._userId = userId;
@@ -80,6 +83,7 @@ export class StableEntity {
     this._affiliationRequests = affiliationRequests;
     this._instructors = instructors;
     this._slotRequests = slotRequests;
+    this._prices = prices;
   }
 
   get id(): string {
@@ -178,6 +182,10 @@ export class StableEntity {
     return this._slotRequests;
   }
 
+  get prices(): PriceEntity[] {
+    return this._prices;
+  }
+
   set name(name: string) {
     this._name = name;
     this._updatedAt = new Date();
@@ -272,6 +280,7 @@ export class StableEntity {
       slotRequests: this._slotRequests.map((slotRequest) =>
         slotRequest.toJSON(),
       ),
+      prices: this._prices.map((price) => price.toJson()),
     };
   }
 

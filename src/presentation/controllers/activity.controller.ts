@@ -52,7 +52,7 @@ export class ActivityController {
       if (req.user.role === UserRole.RIDER) {
         throw new BadRequestException('Vous ne pouvez pas créer une activité');
       }
-
+      console.log('createActivityDto');
       console.log(createActivityDto);
       return this.createActivityUseCase.execute({
         ...createActivityDto,

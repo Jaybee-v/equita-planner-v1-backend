@@ -28,6 +28,7 @@ export class ActivityRepository implements IActivityRepository {
         openToMoreLevel: activity.openToMoreLevel,
         openToPublic: activity.openToPublic,
         instructorId: activity.instructorId,
+        priceId: activity.priceId,
       },
     });
 
@@ -40,6 +41,7 @@ export class ActivityRepository implements IActivityRepository {
       include: {
         participants: true,
         instructor: true,
+        price: true,
       },
     });
 
@@ -47,6 +49,7 @@ export class ActivityRepository implements IActivityRepository {
       ? ActivityMapper.toDomain({
           ...activity,
           instructor: activity.instructor ?? undefined,
+          price: activity.price ?? undefined,
         })
       : null;
   }
@@ -63,12 +66,14 @@ export class ActivityRepository implements IActivityRepository {
           },
         },
         instructor: true,
+        price: true,
       },
     });
     return activity
       ? ActivityMapper.toDomain({
           ...activity,
           instructor: activity.instructor ?? undefined,
+          price: activity.price ?? undefined,
         })
       : null;
   }
@@ -87,6 +92,7 @@ export class ActivityRepository implements IActivityRepository {
       },
       include: {
         instructor: true,
+        price: true,
       },
     });
 
@@ -94,6 +100,7 @@ export class ActivityRepository implements IActivityRepository {
       ActivityMapper.toDomain({
         ...activity,
         instructor: activity.instructor ?? undefined,
+        price: activity.price ?? undefined,
       }),
     );
   }
@@ -111,12 +118,14 @@ export class ActivityRepository implements IActivityRepository {
       },
       include: {
         instructor: true,
+        price: true,
       },
     });
     return activities.map((activity) =>
       ActivityMapper.toDomain({
         ...activity,
         instructor: activity.instructor ?? undefined,
+        price: activity.price ?? undefined,
       }),
     );
   }
@@ -130,12 +139,14 @@ export class ActivityRepository implements IActivityRepository {
       where: { instructorId, date: { gte: startDate, lte: endDate } },
       include: {
         stable: true,
+        price: true,
       },
     });
     return activities.map((activity) =>
       ActivityMapper.toDomain({
         ...activity,
         stable: activity.stable ?? undefined,
+        price: activity.price ?? undefined,
       }),
     );
   }
@@ -182,6 +193,7 @@ export class ActivityRepository implements IActivityRepository {
       include: {
         participants: true,
         instructor: true,
+        price: true,
       },
       orderBy: {
         startDate: 'asc',
@@ -192,6 +204,7 @@ export class ActivityRepository implements IActivityRepository {
       ActivityMapper.toDomain({
         ...activity,
         instructor: activity.instructor ?? undefined,
+        price: activity.price ?? undefined,
       }),
     );
   }

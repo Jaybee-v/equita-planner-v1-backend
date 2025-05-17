@@ -19,6 +19,7 @@ export class UserRepository implements IUserRepository {
           role: userDto.role,
           invitedBy: userDto.invitedBy,
           mustChangePassword: userDto.mustChangePassword,
+          isVerified: userDto.isVerified,
         },
       });
       return UserMapper.toDomain(user);

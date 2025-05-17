@@ -7,6 +7,7 @@ import { AffiliationRequestModule } from './affiliation-request.module';
 import { EmailModule } from './email.module';
 import { InstructorModule } from './instructor.module';
 import { NotificationModule } from './notification.module';
+import { PriceModule } from './price.module';
 import { RiderModule } from './rider.module';
 import { SlotRequestModule } from './slot-request.module';
 import { StableModule } from './stable.module';
@@ -29,6 +30,7 @@ import { UserModule } from './user.module';
     SlotRequestModule,
     NotificationModule,
     EmailModule,
+    PriceModule,
   ],
   controllers: [],
 

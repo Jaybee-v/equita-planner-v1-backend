@@ -21,5 +21,6 @@ export class CreateActivityCommand {
     public readonly validationParticipantOption: ValidationOption,
     public readonly openToMoreLevel: boolean,
     public readonly instructorId: string | null,
+    public readonly priceId: string,
   ) {}
 }

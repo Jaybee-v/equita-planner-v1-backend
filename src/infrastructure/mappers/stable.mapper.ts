@@ -1,12 +1,14 @@
 import {
   AffiliationRequest as PrismaAffiliationRequest,
   Instructor as PrismaInstructor,
+  Price as PrismaPrice,
   SlotRequest as PrismaSlotRequest,
   Stable as PrismaStable,
 } from '@prisma/client';
 import { StableEntity } from 'src/domain/entities/stable.entity';
 import { AffiliationRequestMapper } from './affiliation-request.mapper';
 import { InstructorMapper } from './instructor.mapper';
+import { PriceMapper } from './price.mapper';
 import { SlotRequestMapper } from './slot-request.mapper';
 
 export class StableMapper {
@@ -15,6 +17,7 @@ export class StableMapper {
       affiliationRequests?: PrismaAffiliationRequest[];
       instructors?: PrismaInstructor[];
       slotRequests?: PrismaSlotRequest[];
+      prices?: PrismaPrice[];
     },
   ): StableEntity {
     return new StableEntity(
@@ -48,6 +51,7 @@ export class StableMapper {
       raw.slotRequests?.map((slotRequest) =>
         SlotRequestMapper.toDomain(slotRequest),
       ),
+      raw.prices?.map((price) => PriceMapper.toDomain(price)),
     );
   }
 }

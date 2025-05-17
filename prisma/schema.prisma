@@ -149,6 +149,20 @@ model Stable {
   slotRequests SlotRequest[]
   conversations Conversation[]
   instructors Instructor[]
+  prices Price[]
+}
+
+model Price {
+  id        String   @id @default(cuid())
+  stableId String
+  label String
+  description String?
+  price Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stable Stable @relation(fields: [stableId], references: [id], onDelete: Cascade)
+  activity Activity[]
 }
 
 model AffiliationRequest {
@@ -182,11 +196,12 @@ model Activity {
   instructorId String?
   openToMoreLevel Boolean @default(true)
   openToPublic Boolean @default(false)
+  priceId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
 
-
   stable Stable @relation(fields: [stableId], references: [id], onDelete: Cascade)
+  price Price @relation(fields: [priceId], references: [id])
   instructor Instructor? @relation(fields: [instructorId], references: [id])
 
 
